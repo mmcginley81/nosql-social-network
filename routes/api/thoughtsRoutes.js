@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const { Thoughts, User } = require('../../models');
 
+
+// Get all Thoughts
 router.get('/', (req, res) => {
     Thoughts.find({})
     .then(dbUserData => {
@@ -17,8 +19,7 @@ router.get('/', (req, res) => {
   });
 
 // Create a new thought for a user
-// Thoughts isn't necessarily a subdocument, but it kind of is since a thought can only come from a user
-app.post('/', ({ body }, res) => {
+router.post('/', ({ body }, res) => {
     Thoughts.create(body)
     .then(({ _id }) => 
     User.findOneAndUpdate(
@@ -32,7 +33,43 @@ app.post('/', ({ body }, res) => {
         res.json(err);
       });
   });
+  
+// Get a thought by Id
+router.get('/:_id', (req, res) => {
+    Thoughts.findOne(
+        { _id: req.params._id }
+    )
+    .then(dbThoughtsData => {
+        res.json(dbThoughtsData)
+      })
+      .catch(err => {
+        console.log(err);
+        res.json(err);
+      });
+  });
 
+// Post a reaction
+  router.post('/:_id/reactions', (req, res) => {
+    Thoughts.findOneAndUpdate(
+      {
+        _id: req.params._id,
+      },
+      {
+        $addToSet: {
+          reactions: req.body
+        }
+      },
+    )
+    .then(dbThoughtsData => {
+        res.json(dbThoughtsData)
+      })
+      .catch(err => {
+        console.log(err);
+        res.json(err);
+      });
+  });
+
+// Delete a reaction
 
 
 module.exports = router

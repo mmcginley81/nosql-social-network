@@ -36,7 +36,7 @@ router.post('/', ({ body }, res) => {
 //Get users by _id POPULATE THOUGHT AND FRIEND DATA
 router.get('/:_id', (req, res) => {
     User.findOne(
-        { _id: params.id }
+        { _id: req.params._id }
     )
     .select('-__v')
     .populate(
@@ -46,7 +46,7 @@ router.get('/:_id', (req, res) => {
     )
     .populate(
       'friends'
-    )
+    ) 
       .then(dbUserData => {
         if(!dbUserData) {
             res.status(404).json({ message: 'No user found with this id! '});
@@ -62,7 +62,7 @@ router.get('/:_id', (req, res) => {
 
 //Update a user by id
 router.put('/:_id', ({ params, body }, res) => {
-    User.findOneAndUpdate({ _id: params.id}, body, { new: true })
+    User.findOneAndUpdate({ _id: params._id}, body, { new: true })
     .then(dbUserData => {
       if(!dbUserData) {
           res.status(404).json({ message: 'No user found with this id! '});
@@ -77,7 +77,7 @@ router.put('/:_id', ({ params, body }, res) => {
   });
 
 router.delete('/:_id', ({ params }, res) => {
-    Pizza.findOneAndDelete({ _id: params.id })
+    User.findOneAndDelete({ _id: params._id })
     .then(dbUserData => {
       if(!dbUserData) {
           res.status(404).json({ message: 'No user found with this id! '});
@@ -94,9 +94,9 @@ router.delete('/:_id', ({ params }, res) => {
 //add a new friend to a user's friend list
 router.post('/:_id/friends/:friendId', (req, res) => {
   User.findOneAndUpdate(
-    {_id: req.params.friendId},
+    { _id: req.params._id },
     { $addToSet: {
-      friends: req.body
+      friends: req.params.friendId
       }
     }
   )
@@ -113,22 +113,21 @@ router.post('/:_id/friends/:friendId', (req, res) => {
   });
 });
 
-// Delete a note from a notebook
+// Delete a friend from the friend list
 router.delete('/:_id/friends/:friendId', (req, res) => {
-  Notebook.findOneAndUpdate(
+  User.findOneAndUpdate(
     {
-      _id: req.params
+      _id: req.params._id
   },
   {
     $pull: {
-      friends: {
-        friendId: req.params.friendId
-      }
+      friends: req.params.friendId
+      
     }
   }
   )
-    .then(dbNotebookData => {
-      res.json(dbNotebookData);
+    .then(dbUserData => {
+      res.json(dbUserData);
     })
     .catch(err => {
       res.json(err);
