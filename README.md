@@ -21,4 +21,4 @@ THEN I am able to successfully create, update, and delete users and thoughts in 
 WHEN I test API POST and DELETE routes in Insomnia Core
 THEN I am able to successfully create and delete reactions to thoughts and add and remove friends to a user’s friend list
 
-https://user-images.githubusercontent.com/75404915/115187727-acd44e00-a098-11eb-8d49-5811d00c3070.PNG
+<img width="956" alt="NoSQL Routes" src="https://user-images.githubusercontent.com/75404915/115187816-d2615780-a098-11eb-840a-0729a3da3c6c.PNG">
